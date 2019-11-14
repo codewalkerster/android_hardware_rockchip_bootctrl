@@ -14,7 +14,6 @@ bootctrl_common_cflags := \
     -fstack-protector-strong \
     -DAVB_AB_I_UNDERSTAND_LIBAVB_AB_IS_DEPRECATED \
     -g \
-    -DAVB_ENABLE_DEBUG \
     -DAVB_COMPILATION
 
 bootctrl_common_cppflags := \
