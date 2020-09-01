@@ -90,15 +90,19 @@ include $(CLEAR_VARS)
 LOCAL_CLANG := true
 LOCAL_CFLAGS := $(bootctrl_common_cflags)
 LOCAL_LDFLAGS := $(bootctrl_common_ldflags)
+LOCAL_CPPFLAGS := $(bootctrl_common_cppflags) -DAVB_AB_I_UNDERSTAND_LIBAVB_AB_IS_DEPRECATED
 LOCAL_SHARED_LIBRARIES := \
     libbase \
     libcutils \
-    liblog
+    liblog \
+    android.hardware.boot@1.1
 LOCAL_STATIC_LIBRARIES := \
     libavbuser_proprietary \
-    libfstab
+    libfstab \
+    libbootloader_message_vendor
 LOCAL_HEADER_LIBRARIES := libhardware_headers libsystem_headers
-LOCAL_SRC_FILES := boot_control_avb.c
+LOCAL_SRC_FILES := boot_control_avb.cpp \
+    rk_boot_control.cpp
 LOCAL_MODULE_RELATIVE_PATH := hw
 LOCAL_MODULE := bootctrl.rk30board
 LOCAL_MODULE_OWNER := rockchip
@@ -109,14 +113,18 @@ include $(BUILD_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 LOCAL_CFLAGS := $(bootctrl_common_cflags)
 LOCAL_LDFLAGS := $(bootctrl_common_ldflags)
+LOCAL_CPPFLAGS := $(bootctrl_common_cppflags) -DAVB_AB_I_UNDERSTAND_LIBAVB_AB_IS_DEPRECATED
 LOCAL_SHARED_LIBRARIES := \
     libbase \
     libcutils \
-    liblog
+    liblog \
+    android.hardware.boot@1.1
 LOCAL_STATIC_LIBRARIES := \
     libavbuser \
-    libfstab
+    libfstab \
+    libbootloader_message
 LOCAL_HEADER_LIBRARIES := libhardware_headers libsystem_headers
-LOCAL_SRC_FILES := boot_control_avb.c
+LOCAL_SRC_FILES := boot_control_avb.cpp \
+    rk_boot_control.cpp
 LOCAL_MODULE := bootctrl.rk30board
 include $(BUILD_STATIC_LIBRARY)
