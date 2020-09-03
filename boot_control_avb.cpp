@@ -56,6 +56,7 @@ struct boot_control_private_t {
 static void module_init(boot_control_module_t* module) {
   auto& impl = reinterpret_cast<boot_control_private_t*>(module)->impl;
 
+  setenv("ANDROID_LOG_TAGS", "*:v", 1);
   LOG(INFO) << "rk BootControl module_init ";
   impl.Init();
 }
@@ -63,6 +64,7 @@ static void module_init(boot_control_module_t* module) {
 static unsigned int module_getNumberSlots(boot_control_module_t* module) {
   auto& impl = reinterpret_cast<boot_control_private_t*>(module)->impl;
 
+  setenv("ANDROID_LOG_TAGS", "*:v", 1);
   LOG(INFO) << "rk BootControl module_getNumberSlots ";
   return impl.GetNumberSlots();;
 }
@@ -77,6 +79,7 @@ static unsigned int module_getCurrentSlot(boot_control_module_t* module) {
 static int module_markBootSuccessful(boot_control_module_t* module) {
   auto& impl = reinterpret_cast<boot_control_private_t*>(module)->impl;
 
+  setenv("ANDROID_LOG_TAGS", "*:v", 1);
   LOG(INFO) << "rk BootControl module_markBootSuccessful ";
   return impl.MarkBootSuccessful();
 }

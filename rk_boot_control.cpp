@@ -8,7 +8,12 @@
 #include <libavb_ab/libavb_ab.h>
 #include <libavb_user/libavb_user.h>
 
+#include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/properties.h>
+#include <android-base/stringprintf.h>
+#include <android-base/unique_fd.h>
+
 #include <bootloader_message/bootloader_message.h>
 #include <android/hardware/boot/1.1/IBootControl.h>
 
@@ -30,6 +35,7 @@ static AvbOps* ops = NULL;
 // the bootloader_message buffer stored in |boot_ctrl|. Returns whether the
 // initialization succeeded.
 bool BootControl::Init() {
+  setenv("ANDROID_LOG_TAGS", "*:v", 1);
   LOG(INFO) << "rk BootControl Init ";
 
   if (!InitMiscVirtualAbMessageIfNeeded()) {
@@ -49,28 +55,37 @@ bool BootControl::Init() {
 }
 
 unsigned int BootControl::GetNumberSlots() {
+  setenv("ANDROID_LOG_TAGS", "*:v", 1);
   LOG(INFO) << "rk BootControl GetNumberSlots ";
   return 2;
 }
 
 unsigned int BootControl::GetCurrentSlot() {
-  char propbuf[PROPERTY_VALUE_MAX];
+  //char propbuf[PROPERTY_VALUE_MAX];
 
   LOG(INFO) << "rk BootControl GetCurrentSlot ";
-  property_get("ro.boot.slot_suffix", propbuf, "");
-  if (strcmp(propbuf, "_a") == 0) {
+  //property_get("ro.boot.slot_suffix", propbuf, "");
+  std::string suffix_prop = android::base::GetProperty("ro.boot.slot_suffix", "");
+  if (suffix_prop.empty()) {
+    LOG(ERROR) << "rk BootControl GetCurrentSlot Slot suffix property is not set";
     return 0;
-  } else if (strcmp(propbuf, "_b") == 0) {
+  }
+  
+
+  if (strcmp(suffix_prop.c_str(), "_a") == 0) {
+    return 0;
+  } else if (strcmp(suffix_prop.c_str(), "_b") == 0) {
     return 1;
   } else {
-    avb_errorv("Unexpected slot suffix '", propbuf, "'.\n", NULL);
-    LOG(ERROR) << "rk BootControl GetCurrentSlot Unexpected slot suffix: '" << propbuf << "' ";
+    avb_errorv("rk BootControl GetCurrentSlot Unexpected slot suffix '", suffix_prop.c_str(), "'.\n", NULL);
+    LOG(ERROR) << "rk BootControl GetCurrentSlot Unexpected slot suffix: '" << suffix_prop.c_str() << "' ";
     return 0;
   }
   return 0;
 }
 
 bool BootControl::MarkBootSuccessful() {
+  setenv("ANDROID_LOG_TAGS", "*:v", 1);
   LOG(INFO) << "rk BootControl MarkBootSuccessful ";
   if (avb_ab_mark_slot_successful(ops->ab_ops, GetCurrentSlot()) ==
       AVB_IO_RESULT_OK) {
@@ -109,8 +124,6 @@ bool BootControl::IsSlotBootable(unsigned int slot) {
 
   LOG(INFO) << "rk BootControl IsSlotBootable ";
 
-  avb_assert(slot < 2);
-
   if (slot >= GetNumberSlots()) {
     return -EINVAL;
   } else if (avb_ab_data_read(ops->ab_ops, &ab_data) != AVB_IO_RESULT_OK) {
@@ -129,8 +142,6 @@ bool BootControl::IsSlotMarkedSuccessful(unsigned int slot) {
   bool is_marked_successful;
 
   LOG(INFO) << "rk BootControl IsSlotMarkedSuccessful ";
-
-  avb_assert(slot < 2);
 
   if (slot >= GetNumberSlots()) {
     return -EINVAL;
