@@ -66,12 +66,14 @@ Return<void> BootControl::markBootSuccessful(markBootSuccessful_cb _hidl_cb) {
     struct CommandResult cr;
     ALOGI("Info rk BootControl::markBootSuccessful ");
 
-    if (impl_.MarkBootSuccessful()) {
+    if (0 == impl_.MarkBootSuccessful()) {
         cr.success = true;
         cr.errMsg = "Success";
+        ALOGI("Info rk BootControl::markBootSuccessful ok ");
     } else {
         cr.success = false;
         cr.errMsg = "Operation failed";
+        ALOGE("Info rk BootControl::markBootSuccessful failed ");
     }
     _hidl_cb(cr);
     return Void();
@@ -81,12 +83,14 @@ Return<void> BootControl::setActiveBootSlot(uint32_t slot, setActiveBootSlot_cb 
     struct CommandResult cr;
     ALOGI("Info rk BootControl::setActiveBootSlot ");
 
-    if (impl_.SetActiveBootSlot(slot)) {
+    if (0 == impl_.SetActiveBootSlot(slot)) {
         cr.success = true;
         cr.errMsg = "Success";
+        ALOGI("Info rk BootControl::setActiveBootSlot ok ");
     } else {
         cr.success = false;
         cr.errMsg = "Operation failed";
+        ALOGE("Info rk BootControl::setActiveBootSlot failed ");
     }
     _hidl_cb(cr);
     return Void();
@@ -96,12 +100,14 @@ Return<void> BootControl::setSlotAsUnbootable(uint32_t slot, setSlotAsUnbootable
     struct CommandResult cr;
     ALOGI("Info rk BootControl::setSlotAsUnbootable ");
 
-    if (impl_.SetSlotAsUnbootable(slot)) {
+    if (0 == impl_.SetSlotAsUnbootable(slot)) {
         cr.success = true;
         cr.errMsg = "Success";
+        ALOGI("Info rk BootControl::setSlotAsUnbootable ok ");
     } else {
         cr.success = false;
         cr.errMsg = "Operation failed";
+        ALOGE("Info rk BootControl::setSlotAsUnbootable failed ");
     }
     _hidl_cb(cr);
     return Void();
@@ -111,6 +117,7 @@ Return<BoolResult> BootControl::isSlotBootable(uint32_t slot) {
     ALOGI("Info rk BootControl::isSlotBootable ");
 
     if (!impl_.IsValidSlot(slot)) {
+        ALOGE("Info rk BootControl::isSlotBootable Invalid slot ");
         return BoolResult::INVALID_SLOT;
     }
     return impl_.IsSlotBootable(slot) ? BoolResult::TRUE : BoolResult::FALSE;
@@ -121,6 +128,7 @@ Return<BoolResult> BootControl::isSlotMarkedSuccessful(uint32_t slot) {
 
     if (!impl_.IsValidSlot(slot)) {
         return BoolResult::INVALID_SLOT;
+        ALOGE("Info rk BootControl::isSlotMarkedSuccessful invlaid slot ");
     }
     return impl_.IsSlotMarkedSuccessful(slot) ? BoolResult::TRUE : BoolResult::FALSE;
 }
