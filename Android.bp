@@ -80,7 +80,7 @@ cc_library_static {
 }
 
 cc_library {
-    name: "bootctrl.rk30board",
+    name: "bootctrl.odroid",
     defaults: [
         "bootctrl_defaults",
         "bootctrl_sources",
@@ -168,6 +168,6 @@ cc_library {
     ],
     static_libs: [
         "libfstab",
-        "bootctrl.rk30board",
+        "bootctrl.odroid",
     ],
 }
